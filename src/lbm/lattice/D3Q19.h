@@ -18,6 +18,8 @@ struct D3Q19
     const static int uIndex = q + 1;         ///< Velocity index
     const static int forceIndex = q + 1 + d; ///< Force index
 
+    typedef T Real;
+
     static constexpr int c[q][d] = {
         {0, 0, 0},
 
@@ -41,11 +43,11 @@ struct D3Q19
         {0, 1, 1},
         {0, 1, -1}};    ///< Velocity set vectors
 
-    static const int opp[dataSize] = {
+    static constexpr int opp[dataSize] = {
         0, 10, 11, 12, 13, 14, 15, 16, 17, 18, 1, 2, 3, 4, 5, 6, 7, 8, 9, 
         19, 20, 21, 22, 23, 24, 25};    ///< Index of opposite vector in velocity set; for macroscopic quantities, the opposite is considered itself.
 
-    static const T t[q] = {
+    static constexpr T t[q] = {
         (T)1 / (T)3,
 
         (T)1 / (T)18, (T)1 / (T)18, (T)1 / (T)18,

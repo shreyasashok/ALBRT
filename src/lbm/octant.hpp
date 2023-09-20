@@ -38,24 +38,24 @@ Octant<T, Lattice, nx, ny, nz, nghost>::Octant()
 
     // Loop over remaining populations and set up EsoPull pointer shifts.
     for (int iPop = 1; iPop <= Lattice::q/2; iPop++) {
-        int dx = Lattice::c(iPop, 0);
-        int dy = Lattice::c(iPop, 1);
-        int dz = Lattice::c(iPop, 2);
+        int dx = Lattice::c[iPop][0];
+        int dy = Lattice::c[iPop][1];
+        int dz = Lattice::c[iPop][2];
 
         int shift = getCellIndex(dx, dy, dz);
         if (shift < 0) {
             evenData.get()[iPop] = rawData.get() + lbmBlockAllocSize*iPop - shift;
-            oddData.get()[Lattice::opp(iPop)] = evenData.get()[iPop] + shift;
+            oddData.get()[Lattice::opp[iPop]] = evenData.get()[iPop] + shift;
 
-            evenData.get()[Lattice::opp(iPop)] = rawData.get() + lbmBlockAllocSize*Lattice::opp(iPop);
-            oddData.get()[iPop] = evenData.get()[Lattice::opp(iPop)] - shift;
+            evenData.get()[Lattice::opp[iPop]] = rawData.get() + lbmBlockAllocSize*Lattice::opp[iPop];
+            oddData.get()[iPop] = evenData.get()[Lattice::opp[iPop]] - shift;
         }
         else {
             evenData.get()[iPop] = rawData.get() + lbmBlockAllocSize*iPop;
-            oddData.get()[Lattice::opp(iPop)] = evenData.get()[iPop] + shift;
+            oddData.get()[Lattice::opp[iPop]] = evenData.get()[iPop] + shift;
 
-            evenData.get()[Lattice::opp(iPop)] = rawData.get() + lbmBlockAllocSize*Lattice::opp(iPop) + shift;
-            oddData.get()[iPop] = evenData.get()[Lattice::opp(iPop)] - shift;
+            evenData.get()[Lattice::opp[iPop]] = rawData.get() + lbmBlockAllocSize*Lattice::opp[iPop] + shift;
+            oddData.get()[iPop] = evenData.get()[Lattice::opp[iPop]] - shift;
         }
     }
 

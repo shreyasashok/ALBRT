@@ -8,7 +8,7 @@ if (ENABLE_CUDA)
 endif()
 
 message(STATUS "Here! ${EsoPullTest_depends}")
-blt_add_executable(NAME EsoPullTest SOURCES EsoPullTest.cpp DEPENDS_ON ${EsoPullTest_depends})
+blt_add_executable(NAME EsoPullTest SOURCES esoPullTest.cpp DEPENDS_ON ${EsoPullTest_depends})
 
 blt_print_target_properties(TARGET EsoPullTest)
 

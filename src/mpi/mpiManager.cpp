@@ -3,6 +3,8 @@
 namespace ALBRT {
 
 sc_MPI_Comm MPIManager::mpiCommWorld;
+int MPIManager::rank;
+int MPIManager::numRanks;
 
 void MPIManager::initialize()
 {
@@ -12,6 +14,9 @@ void MPIManager::initialize()
 
     // init SC with production level logging
     sc_init(mpiCommWorld, 1, 1, NULL, SC_LP_PRODUCTION);
+
+    sc_MPI_Comm_rank(mpiCommWorld, &rank);
+    sc_MPI_Comm_size(mpiCommWorld, &numRanks);
 }
 
 void MPIManager::finalize()

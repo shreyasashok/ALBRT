@@ -6,5 +6,7 @@ if (ENABLE_CUDA)
     set(MPITest_depends ${MPITest_depends} cuda)
 endif()
 
-blt_add_executable(NAME MPITest SOURCES mpiTest.cpp DEPENDS_ON ${MPITest_depends})
+blt_add_executable(NAME MPITest     SOURCES mpiTest.cpp 
+                                    DEPENDS_ON ${MPITest_depends}
+                                    OUTPUT_DIR "${CMAKE_BINARY_DIR}/bin/tests/MPITest/")
 blt_add_test(NAME MPITest COMMAND MPITest)

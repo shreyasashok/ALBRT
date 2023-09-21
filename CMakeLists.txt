@@ -47,5 +47,5 @@ find_package(RAJA REQUIRED)
 add_subdirectory(src)
 add_subdirectory(tests)
 
-add_executable(ALBRTMain main.cpp)
+add_executable(ALBRTExec main.cpp)
 

@@ -14,7 +14,10 @@ void ALBRTMain::initialize()
 
 void ALBRTMain::finalize()
 {
+    // Finalize in reverse order of initialization
+    
     VTKMPIManager::finalize();
+    // p4est has no finalize()
     MPIManager::finalize();    
 }
 

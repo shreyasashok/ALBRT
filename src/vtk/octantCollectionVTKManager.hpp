@@ -9,6 +9,7 @@
 #include <vtkCellArray.h>
 #include <vtkUnstructuredGrid.h>
 #include <vtkXMLUnstructuredGridWriter.h>
+#include <vtkXMLPUnstructuredGridWriter.h>
 #include <vtkFloatArray.h>
 #include <vtkCellData.h>
 
@@ -108,12 +109,19 @@ void OctantCollectionVTKManager<T, Lattice, nx, ny, nz, nghost>::writeForest(lon
     octantRepresentation->GetCellData()->AddArray(octantIndex);
     octantRepresentation->GetCellData()->AddArray(octantLevel);
 
-    std::string filenameProcessed = outputDirectory + filename + "_iT" + std::to_string(timestep) + ".pvtu";
+    std::string parallelFilenameProcessed = outputDirectory + filename + "_iT" + std::to_string(timestep) + ".pvtu";
 
-    vtkNew<vtkXMLUnstructuredGridWriter> writer;
-    writer->SetFileName(filenameProcessed.c_str());
-    writer->SetInputData(octantRepresentation);
-    writer->Write();
+    vtkNew<vtkXMLPUnstructuredGridWriter> parallelWriter;
+
+    parallelWriter->EncodeAppendedDataOff();
+    parallelWriter->SetFileName(parallelFilenameProcessed.c_str());
+    parallelWriter->SetNumberOfPieces(VTKMPIManager::controller->GetNumberOfProcesses());
+    parallelWriter->SetStartPiece(VTKMPIManager::controller->GetLocalProcessId());
+    parallelWriter->SetEndPiece(VTKMPIManager::controller->GetLocalProcessId());
+    parallelWriter->SetInputData(octantRepresentation);
+    parallelWriter->SetUseSubdirectory(true);
+    parallelWriter->Update();
+
 }
 
 } //end namespace

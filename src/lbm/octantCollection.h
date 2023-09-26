@@ -1,11 +1,50 @@
 #ifndef OCTANT_COLLECTION_H
 #define OCTANT_COLLECTION_H
 
+#include "commLattice.h"
+
 #include <p8est.h>
 #include <p8est_connectivity.h>
 #include <p8est_iterate.h>
 #include <vector>
 namespace ALBRT {
+
+/**
+ * Contains internal information about each octant neighbor.
+ * Basically a more minimal version of OctantInternalInfo. 
+ * The intended use is to 
+*/
+struct NeighborInfo {
+    int proc;
+    int index;
+};
+
+enum NeighborType {
+    MATCH,
+    FINE,
+    COARSE,
+    BOUNDARY
+};
+
+//DEBUG only
+static char* neighborTypeStrings[] = {(char*)"MATCH", (char*)"FINE", (char*)"COARSE", (char*)"BOUNDARY"};
+
+/**
+ * Describes an octant's relationship to its neighbors. 
+ * Uses NeighborInfo to identify neighbor octants.
+*/
+struct NeighborRelationship {
+    NeighborType type;
+    union Neighbor {
+        NeighborInfo match;
+        NeighborInfo fine[4]; //maximum four neighbors for a fine relationship
+        struct Coarse {
+            NeighborInfo info;
+            int index;
+        } coarse;
+    } neighbor; 
+};
+
 
 /**
  * Contains internal information about each octant.
@@ -22,6 +61,10 @@ struct OctantInternalInfo {
 
     T origin[3];
     T physLength[3];
+
+    NeighborRelationship faceNeighbors[FaceCommLattice::q];
+    NeighborRelationship edgeNeighbors[EdgeCommLattice::q];
+    NeighborRelationship cornerNeighbors[CornerCommLattice::q];
 };
 
 
@@ -56,11 +99,19 @@ private:
 
     p8est_connectivity_t * connectivity;
     p8est_t              * forest;
-
+    p8est_ghost_t        * forestGhost;
+    
     std::vector<OctantInternalInfo<T>> localOctantInfos;
+    std::vector<OctantInternalInfo<T>> ghostOctantInfos;
 
     static int numLocalOctants;
     static void initOctantIndices(p8est_iter_volume_info_t * info, void *user_data);
+
+    static void initOctantFaceNeighbors(p8est_iter_face_info_t * info, void *user_data);
+
+    static void initOctantEdgeNeighbors(p8est_iter_edge_info_t * info, void *user_data);
+
+    static void initOctantCornerNeighbors(p8est_iter_corner_info_t * info, void *user_data);
 
 public:
     /** 
